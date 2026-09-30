@@ -1,4 +1,5 @@
-# AI-Model-Distribution-Edge-Message-Brokers
+# AI Model Distribution Using Edge Message Brokers
+
 This repository contains the experimental implementation for evaluating
 Apache Kafka and RabbitMQ as message brokers for AI model distribution
 in edge computing environments.
@@ -47,24 +48,24 @@ model file from a local HTTP server.
 
 ## Repository Structure
 
-text
+```text
 AI-Model-Distribution-Edge-Message-Brokers/
-├── rabbitmq/
-│   ├── consumer_full.py
-│   ├── consumer_metadata.py
-│   ├── producer_full.py
-│   ├── producer_metadata.py
-│   └── experiments.py
 ├── kafka/
 │   ├── kafka_consumer_full.py
 │   ├── kafka_consumer_meta.py
 │   ├── kafka_producer_full.py
 │   ├── kafka_producer_meta.py
 │   └── run_kafka_experiments.py
+├── rabbitmq/
+│   ├── consumer_full.py
+│   ├── consumer_metadata.py
+│   ├── experiments.py
+│   ├── producer_full.py
+│   └── producer_metadata.py
 ├── .gitignore
 ├── LICENSE
 └── README.md
-
+```
 
 Large model binaries, received model files, virtual environments, and
 temporary experiment files are excluded from the repository.
@@ -73,7 +74,7 @@ temporary experiment files are excluded from the repository.
 
 # How to Run the Experiments
 
-Kafka and RabbitMQ are implemented as *separate experimental setups*.
+Kafka and RabbitMQ are implemented as **separate experimental setups**.
 
 Run each experiment from its corresponding project folder.
 
@@ -87,9 +88,9 @@ Make sure the following are installed:
 
 Install the required Python libraries:
 
-bash
+```bash
 pip install pika kafka-python pandas matplotlib requests
-
+```
 
 ---
 
@@ -99,41 +100,41 @@ pip install pika kafka-python pandas matplotlib requests
 
 Pull the RabbitMQ Docker image:
 
-bash
+```bash
 docker pull rabbitmq:3-management
-
+```
 
 Create and start the RabbitMQ container:
 
-bash
+```bash
 docker run -d --name rabbitmq --cap-add=NET_ADMIN --cap-add=NET_RAW -p 5672:5672 -p 15672:15672 rabbitmq:3-management
-
+```
 
 Check that the container is running:
 
-bash
+```bash
 docker ps
+```
 
+RabbitMQ will be available locally on port `5672`.
 
-RabbitMQ will be available locally on port 5672.
-
-The RabbitMQ Management interface is available on port 15672.
+The RabbitMQ Management interface is available on port `15672`.
 
 ## 2. Create the Test Model Files
 
-Navigate to the rabbitmq project folder and run:
+Navigate to the `rabbitmq` project folder and run:
 
-bash
+```bash
 python -c "import os; [open(f'model_{s}MB.bin', 'wb').write(os.urandom(s*1024*1024)) for s in (10, 50, 100)]"
-
+```
 
 This creates three dummy binary files inside the RabbitMQ project folder:
 
-text
+```text
 model_10MB.bin
 model_50MB.bin
 model_100MB.bin
-
+```
 
 These files represent AI model payloads of 10 MB, 50 MB, and 100 MB.
 They contain randomly generated binary data and do not represent actual
@@ -141,26 +142,26 @@ trained AI models.
 
 ## 3. Start the Local HTTP Server
 
-The local HTTP server is required for the *metadata-based distribution*
+The local HTTP server is required for the **metadata-based distribution**
 experiments.
 
 Navigate to the folder containing the model files and run:
 
-bash
+```bash
 python -m http.server 8000
-
+```
 
 Keep this terminal running while performing the metadata-based experiments.
 
 ## 4. Run the RabbitMQ Experiments
 
-Open another terminal and navigate to the rabbitmq project folder.
+Open another terminal and navigate to the `rabbitmq` project folder.
 
 Run the experiment runner:
 
-bash
+```bash
 python experiments.py
-
+```
 
 The experiment runner executes the configured RabbitMQ experiments using
 the specified model sizes and experimental conditions.
@@ -173,15 +174,15 @@ the specified model sizes and experimental conditions.
 
 Run ZooKeeper using Docker:
 
-bash
+```bash
 docker run -d --name zookeeper -p 2181:2181 zookeeper
-
+```
 
 ## 2. Create and Start Kafka
 
 Create the Kafka container:
 
-bash
+```bash
 docker run -d --name kafka -p 9092:9092 \
 -e KAFKA_PROCESS_ROLES=broker,controller \
 -e KAFKA_NODE_ID=1 \
@@ -191,61 +192,61 @@ docker run -d --name kafka -p 9092:9092 \
 -e KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER \
 -e KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 \
 confluentinc/cp-kafka
-
+```
 
 If the Kafka container has already been created, it can be started using:
 
-bash
+```bash
 docker start kafka
-
+```
 
 Check that the container is running:
 
-bash
+```bash
 docker ps
-
+```
 
 ## 3. Create the Test Model Files
 
-Navigate to the kafka project folder and run:
+Navigate to the `kafka` project folder and run:
 
-bash
+```bash
 python -c "import os; [open(f'model_{s}MB.bin', 'wb').write(os.urandom(s*1024*1024)) for s in (10, 50, 100)]"
-
+```
 
 This creates three dummy binary files inside the RabbitMQ project folder:
 
-text
+```text
 model_10MB.bin
 model_50MB.bin
 model_100MB.bin
-
+```
 
 These files represent AI model payloads of 10 MB, 50 MB, and 100 MB.
 They contain randomly generated binary data and do not represent actual
 trained AI models.
 ## 4. Start the Local HTTP Server
 
-The HTTP server is required for the *metadata-based distribution*
+The HTTP server is required for the **metadata-based distribution**
 experiments.
 
 From the folder containing the model files, run:
 
-bash
+```bash
 python -m http.server 8000
-
+```
 
 Keep this terminal running during the metadata-based experiments.
 
 ## 5. Run the Kafka Experiments
 
-Open another terminal and navigate to the kafka project folder.
+Open another terminal and navigate to the `kafka` project folder.
 
 Run:
 
-bash
+```bash
 python run_kafka_experiments_v2.py
-
+```
 
 The experiment runner executes the configured Kafka experiments using
 the specified model sizes and experimental conditions.
@@ -254,11 +255,11 @@ the specified model sizes and experimental conditions.
 
 # Experiment Execution
 
-The Kafka and RabbitMQ experiments are executed *separately*.
+The Kafka and RabbitMQ experiments are executed **separately**.
 
 The general experimental procedure is:
 
-text
+```text
 Start Message Broker Using Docker
               ↓
 Create Model Payloads
@@ -270,7 +271,7 @@ Start Local HTTP Server
 Run Experiment Script
               ↓
 Collect Experimental Measurements
-
+```
 
 The local HTTP server is required only for metadata-based distribution,
 where the message broker transfers model metadata and the consumer retrieves
@@ -281,7 +282,7 @@ through the message broker.
 
 ## Note
 
-The .bin files used in the experiments are dummy payloads created to
+The `.bin` files used in the experiments are dummy payloads created to
 represent AI models of different sizes. They do not contain actual trained
 machine-learning models.
 
